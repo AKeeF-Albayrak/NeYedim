@@ -42,3 +42,23 @@ create table if not exists public.unit_weights (
 -- Aynı besin + birim ikilisi tekrar etmesin
 create unique index if not exists unit_weights_food_unit_idx
   on public.unit_weights (food_name, unit);
+
+-- ---------------------------------------------------------------------------
+-- meals: kullanıcının kaydettiği öğünler
+-- parsed_items, analyzeMeal çıktısındaki kalem listesini (jsonb) tutar.
+-- (Tek kullanıcılı kişisel sürüm; çok kullanıcı eklenince user_id kolonu gelir.)
+-- ---------------------------------------------------------------------------
+create table if not exists public.meals (
+  id             uuid primary key default gen_random_uuid(),
+  raw_text       text not null,
+  parsed_items   jsonb not null default '[]'::jsonb,
+  total_calories numeric not null default 0,
+  total_protein  numeric not null default 0,
+  total_carbs    numeric not null default 0,
+  total_fat      numeric not null default 0,
+  created_at     timestamptz not null default now()
+);
+
+-- Geçmişi tarihe göre listelemek için indeks
+create index if not exists meals_created_at_idx
+  on public.meals (created_at desc);
