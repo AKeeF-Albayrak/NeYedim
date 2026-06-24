@@ -24,3 +24,15 @@ export interface Nutrients {
   carbs: number;
   fat: number;
 }
+
+// meals tablosundaki bir kayıt (API'den dönen)
+export interface Meal {
+  id: string;
+  raw_text: string;
+  parsed_items: unknown[];
+  total_calories: number;
+  total_protein: number;
+  total_carbs: number;
+  total_fat: number;
+  created_at: string;
+}
