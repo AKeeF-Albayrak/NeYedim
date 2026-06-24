@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Meal, Nutrients } from "@/lib/types";
 import MealInput from "./MealInput";
 import DailySummary from "./DailySummary";
@@ -18,6 +19,7 @@ function dayKey(d: Date): string {
 }
 
 export default function Dashboard({ userEmail }: { userEmail: string }) {
+  const router = useRouter();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +28,11 @@ export default function Dashboard({ userEmail }: { userEmail: string }) {
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/meals?limit=200");
+      // Oturum yoksa giriş sayfasına yönlendir
+      if (res.status === 401) {
+        router.replace("/login");
+        return;
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Öğünler alınamadı");
       setMeals(data.meals as Meal[]);
@@ -35,7 +42,7 @@ export default function Dashboard({ userEmail }: { userEmail: string }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     load();

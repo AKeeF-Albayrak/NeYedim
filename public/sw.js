@@ -1,11 +1,9 @@
-// NeYedim — basit service worker (offline app shell + ağ-öncelikli veri).
-const CACHE = "neyedim-v1";
-const APP_SHELL = ["/", "/manifest.webmanifest"];
+// NeYedim — service worker.
+// Sayfa gezinmeleri ve API: AĞ-ÖNCELİKLİ (taze auth durumu + güncel UI için).
+// Statik varlıklar (içerik-hash'li JS/CSS/görsel): cache-öncelikli.
+const CACHE = "neyedim-v2";
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(APP_SHELL))
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
@@ -22,27 +20,18 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-
-  // Sadece GET isteklerini ele al
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
 
-  // API istekleri: ağ-öncelikli (taze veri), başarısızsa cache
-  if (url.pathname.startsWith("/api/")) {
-    event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(request, copy));
-          return res;
-        })
-        .catch(() => caches.match(request))
-    );
+  // HTML gezinmeleri + API istekleri: her zaman ağdan dene (auth/redirect taze kalsın),
+  // yalnızca çevrimdışıyken önbelleğe düş.
+  if (request.mode === "navigate" || url.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
     return;
   }
 
-  // Diğerleri: cache-öncelikli, yoksa ağdan çek ve cache'le
+  // Diğer statik varlıklar: cache-öncelikli, yoksa ağdan çek ve önbelleğe al.
   event.respondWith(
     caches.match(request).then(
       (cached) =>

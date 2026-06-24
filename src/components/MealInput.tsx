@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { MealAnalysis } from "@/lib/analyze";
 
 export default function MealInput({ onSaved }: { onSaved: () => void }) {
+  const router = useRouter();
   const [text, setText] = useState("");
   const [preview, setPreview] = useState<MealAnalysis | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -20,6 +22,10 @@ export default function MealInput({ onSaved }: { onSaved: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
+      if (res.status === 401) {
+        router.replace("/login");
+        return;
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Analiz başarısız");
       setPreview(data as MealAnalysis);
@@ -40,6 +46,10 @@ export default function MealInput({ onSaved }: { onSaved: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
+      if (res.status === 401) {
+        router.replace("/login");
+        return;
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Kayıt başarısız");
       setText("");
