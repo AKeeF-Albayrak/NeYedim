@@ -5,9 +5,8 @@ import { asciiFold } from "./normalize";
 import { applySynonyms } from "./synonyms";
 
 export interface FoodRecord {
+  // Eşleştirme yalnızca ada bakar; çağıran daha zengin tipler geçirebilir.
   name: string;
-  // hesaplama için diğer alanlar çağıran tarafında taşınır
-  [key: string]: unknown;
 }
 
 export interface MatchResult<T extends FoodRecord> {
