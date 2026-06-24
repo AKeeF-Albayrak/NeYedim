@@ -2,7 +2,7 @@
 // Bu tablolar nadiren değiştiği için süreç içi (in-memory) önbellek kullanılır;
 // her parse isteğinde 460 satırı yeniden çekmemek için.
 
-import { getSupabaseAdmin } from "./supabase/server";
+import { getSupabaseAdmin } from "./supabase/admin";
 import type { Food, UnitWeight } from "./types";
 
 const TTL_MS = 5 * 60 * 1000; // 5 dakika

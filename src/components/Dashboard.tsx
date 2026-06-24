@@ -6,6 +6,7 @@ import MealInput from "./MealInput";
 import SummaryCards from "./SummaryCards";
 import WeeklyChart, { type DayBar } from "./WeeklyChart";
 import MealList from "./MealList";
+import LogoutButton from "./LogoutButton";
 
 const TR_DAYS = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
 
@@ -16,7 +17,7 @@ function dayKey(d: Date): string {
   ).padStart(2, "0")}`;
 }
 
-export default function Dashboard() {
+export default function Dashboard({ userEmail }: { userEmail: string }) {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,17 +90,25 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-6">
-      <header className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          NeYedim
-        </h1>
-        <span className="text-xs text-zinc-400">
-          {new Date().toLocaleDateString("tr-TR", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-          })}
-        </span>
+      <header className="flex items-center justify-between gap-3">
+        <div className="flex flex-col">
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            NeYedim
+          </h1>
+          <span className="text-xs text-zinc-400">
+            {new Date().toLocaleDateString("tr-TR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+          </span>
+        </div>
+        <div className="flex flex-col items-end gap-0.5">
+          <span className="max-w-[12rem] truncate text-xs text-zinc-500 dark:text-zinc-400">
+            {userEmail}
+          </span>
+          <LogoutButton />
+        </div>
       </header>
 
       <MealInput onSaved={load} />

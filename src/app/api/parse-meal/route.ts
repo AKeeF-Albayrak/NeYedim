@@ -5,10 +5,16 @@
 import { NextResponse } from "next/server";
 import { analyzeMeal } from "@/lib/analyze";
 import { fetchFoods, fetchUnitWeights } from "@/lib/data";
+import { getCurrentUser } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

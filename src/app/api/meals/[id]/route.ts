@@ -2,12 +2,13 @@
 //   PUT    -> { text } alır, yeniden analiz edip kaydı günceller
 //   DELETE -> kaydı siler
 //
+// RLS yalnızca sahibinin erişmesine izin verir; ayrıca user_id ile de filtreleriz.
 // NOT: Next 16'da dinamik route params bir Promise'tir, await edilmelidir.
 
 import { NextResponse } from "next/server";
 import { analyzeMeal } from "@/lib/analyze";
 import { fetchFoods, fetchUnitWeights } from "@/lib/data";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,14 @@ type Ctx = { params: Promise<{ id: string }> };
 
 export async function PUT(request: Request, ctx: Ctx) {
   const { id } = await ctx.params;
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
+  }
 
   let body: unknown;
   try {
@@ -34,6 +43,12 @@ export async function PUT(request: Request, ctx: Ctx) {
       { status: 400 }
     );
   }
+  if (text.length > 1000) {
+    return NextResponse.json(
+      { error: "Metin çok uzun (en fazla 1000 karakter)." },
+      { status: 400 }
+    );
+  }
 
   try {
     const [foods, unitWeights] = await Promise.all([
@@ -42,7 +57,6 @@ export async function PUT(request: Request, ctx: Ctx) {
     ]);
     const analysis = analyzeMeal(text, foods, unitWeights);
 
-    const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("meals")
       .update({
@@ -54,6 +68,7 @@ export async function PUT(request: Request, ctx: Ctx) {
         total_fat: analysis.totals.fat,
       })
       .eq("id", id)
+      .eq("user_id", user.id)
       .select()
       .single();
 
@@ -74,9 +89,20 @@ export async function PUT(request: Request, ctx: Ctx) {
 export async function DELETE(_request: Request, ctx: Ctx) {
   const { id } = await ctx.params;
 
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
+  }
+
   try {
-    const supabase = getSupabaseAdmin();
-    const { error } = await supabase.from("meals").delete().eq("id", id);
+    const { error } = await supabase
+      .from("meals")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
     if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });
   } catch (err) {

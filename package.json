@@ -12,6 +12,7 @@
     "test:calc": "tsx scripts/test-calc.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "csv-parse": "^7.0.0",
     "fuzzball": "^2.2.6",

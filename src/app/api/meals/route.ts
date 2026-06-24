@@ -1,11 +1,13 @@
 // /api/meals
-//   GET  -> son öğünleri listeler (?limit=50)
-//   POST -> { text } alır, sunucuda analiz edip kaydeder, kaydı döner
+//   GET  -> giriş yapan kullanıcının son öğünleri (?limit=50)
+//   POST -> { text } alır, sunucuda analiz edip kullanıcıya kaydeder
+//
+// Tüm işlemler kullanıcı oturumuna bağlıdır; RLS politikaları erişimi izole eder.
 
 import { NextResponse } from "next/server";
 import { analyzeMeal } from "@/lib/analyze";
 import { fetchFoods, fetchUnitWeights } from "@/lib/data";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -13,8 +15,15 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limit = Math.min(Number(searchParams.get("limit")) || 50, 200);
 
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
+  }
+
   try {
-    const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("meals")
       .select("*")
@@ -33,6 +42,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Giriş yapmalısınız." }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -51,6 +68,12 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  if (text.length > 1000) {
+    return NextResponse.json(
+      { error: "Metin çok uzun (en fazla 1000 karakter)." },
+      { status: 400 }
+    );
+  }
 
   try {
     const [foods, unitWeights] = await Promise.all([
@@ -59,10 +82,10 @@ export async function POST(request: Request) {
     ]);
     const analysis = analyzeMeal(text, foods, unitWeights);
 
-    const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("meals")
       .insert({
+        user_id: user.id,
         raw_text: text,
         parsed_items: analysis.items,
         total_calories: analysis.totals.calories,
