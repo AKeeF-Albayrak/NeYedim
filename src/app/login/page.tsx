@@ -55,7 +55,14 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-full flex-1 items-center justify-center bg-zinc-50 px-4 dark:bg-black">
       <div className="w-full max-w-sm">
-        <div className="mb-6 text-center">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <span className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-sm">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 2v7a2.5 2.5 0 0 0 5 0V2" />
+              <path d="M9.5 9v13" />
+              <path d="M18 2c-1.5 1.5-1.5 4-.5 5.5S18 11 18 13v9" />
+            </svg>
+          </span>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             NeYedim
           </h1>
