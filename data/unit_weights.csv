@@ -1,0 +1,62 @@
+food_name,unit,grams_per_unit,note
+Yumurta,adet,50,orta boy 1 yumurta
+Yumurta Sarısı,adet,17,1 yumurtanın sarısı
+Yumurta Beyazı,adet,33,1 yumurtanın akı
+Armut,adet,178,orta boy
+Elma,adet,182,orta boy
+Muz,adet,118,orta boy (kabuksuz)
+Portakal,adet,140,orta boy
+Mandalina,adet,88,orta boy
+Greyfurt,adet,230,orta boy yarısı ~115
+Kivi,adet,75,orta boy
+Şeftali,adet,150,orta boy
+Nektarin,adet,140,orta boy
+Kayısı,adet,35,taze 1 adet
+Kırmızı Erik,adet,66,orta boy
+Yeşil Erik,adet,30,çağla erik
+Hurma,adet,8,kuru 1 adet
+Kuru Erik,adet,9.5,1 adet
+İncir,adet,50,taze orta boy
+Nar,adet,280,orta boy
+Limon,adet,84,orta boy
+Mandalina,dilim,11,1 dilim
+Çilek,adet,12,orta boy 1 tane
+Kiraz,adet,8,1 tane
+Üzüm,adet,5,1 tane
+Domates,adet,123,orta boy
+Kiraz Domates,adet,17,1 tane
+Salatalık,adet,120,orta boy
+Sivri Biber,adet,30,1 adet
+Çarliston Biber,adet,40,1 adet
+Havuç,adet,61,orta boy
+Patates,adet,170,orta boy
+Soğan,adet,110,orta boy
+Ekmek,dilim,25,1 normal dilim
+Tost Ekmeği,dilim,28,1 dilim
+Tam Buğday Ekmeği,dilim,28,1 dilim
+Kepekli Ekmek,dilim,28,1 dilim
+Simit,adet,100,1 adet
+Lavaş,adet,60,1 adet
+Bazlama,adet,80,1 adet
+Beyaz Peynir,dilim,30,kibrit kutusu kadar
+Kaşar Peyniri,dilim,20,1 ince dilim
+Süt,bardak,200,1 su bardağı
+Ayran,bardak,200,1 su bardağı
+Yoğurt,yemek kaşığı,20,1 dolu kaşık
+Yoğurt,kase,200,1 kase
+Tereyağı,yemek kaşığı,14,1 yemek kaşığı
+Zeytinyağı,yemek kaşığı,13.5,1 yemek kaşığı
+Bal,yemek kaşığı,21,1 yemek kaşığı
+Reçel,yemek kaşığı,20,1 yemek kaşığı
+Pekmez,yemek kaşığı,20,1 yemek kaşığı
+Tahin,yemek kaşığı,15,1 yemek kaşığı
+Mayonez,yemek kaşığı,14,1 yemek kaşığı
+Ketçap,yemek kaşığı,15,1 yemek kaşığı
+Şeker,tatlı kaşığı,4,1 tatlı kaşığı (~1 küp)
+Ceviz,adet,5,1 tam cevizin içi
+Fındık,adet,1.3,1 tane iç fındık
+Badem,adet,1.2,1 tane
+Antep Fıstığı,adet,0.7,1 tane iç fıstık
+Yeşil Zeytin,adet,4,1 tane
+Zeytin,adet,4,1 tane
+Lokum,adet,12,1 adet
